@@ -1,0 +1,49 @@
+to import an existing resource into terraform
+
+terraform import azurerm_resource_group.dev_rg /subscriptions/c0239a41-ee80-487d-bb52-bc38e45b9cb5/resourcegroups/devops
+syntax: terraform import resource_type.reference resource_id
+
+it will init the terraform state and import the resource into our terraform file
+
+plan execution tfplan
+save the executionplan 
+terraform plan -out tfplan 
+
+when you save the plan - use terraform apply tfplan   to apply changes
+
+delete your local state file after you have migrated it to terraform cloud
+use this command: rm terraform.tfstate*     deletes the state and state backup
+
+
+
+to use cicd workflow
+
+create github repo
+go to actions and search for terraform workflow 
+you cn remove the pull request line at the top optionally
+commit it to your main branch 
+go to terraform cloud and get api token, add it to your guthub secrets
+optiionally setup branch protection rules
+
+now go to terraform cloud
+create a new workspace
+select api driven workflow
+create environment variables (not terraform variable) that terraform will use to access azure
+
+to get your credentials run this command (az-demo can be anything)
+az ad sp create-for-rbac -n az-demo --role="Contributor" --scopes="/subscriptions/c0239a41-ee80-487d-bb52-bc38e45b9cb5"
+
+it will give you this
+
+{
+  "appId": "",
+  "displayName": "az-demo",
+  "password": "",
+  "tenant": ""
+}
+
+add these to your environment variables under your workspace in terraform cloud
+ARM_CLIENT_ID=""
+ARM_CLIENT_SECRET=""
+ARM_SUBSCRIPTION_ID=""
+ARM_TENANT_ID=""
