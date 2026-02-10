@@ -52,3 +52,47 @@ resource "azurerm_storage_container" "dev_storage_container" {
   container_access_type = "private"
   storage_account_name  = azurerm_storage_account.dev_account.name
 }
+
+# Create a Log Analytics workspace for Application Insight
+resource "azurerm_log_analytics_workspace" "dev_analytics" {
+  name                = coalesce(var.ws_name, random_string.name.result)
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+}
+
+# Create an Application Insights instance for monitoring
+resource "azurerm_application_insights" "dev_app_insights" {
+  name                = coalesce(var.ai_name, random_string.name.result)
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  application_type    = "web"
+  workspace_id        = azurerm_log_analytics_workspace.dev_analytics.id
+}
+
+
+
+resource "azurerm_service_plan" "dev_service_plan" {
+  name                = "vicdev-service-plan"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  sku_name            = "Y1"
+  os_type             = "Linux"
+}
+
+resource "azurerm_linux_function_app" "weather_api" {
+  name                = "vicdev-weatherapi"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+
+  storage_account_name       = azurerm_storage_account.dev_account.name
+  storage_account_access_key = azurerm_storage_account.dev_account.primary_access_key
+  service_plan_id            = azurerm_service_plan.dev_service_plan.id
+
+  site_config {
+    application_stack {
+      dotnet_version = "8.0"
+    }
+  }
+}
