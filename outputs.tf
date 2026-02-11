@@ -11,9 +11,9 @@ output "asp_name" {
 }
 
 output "fa_name" {
-  value = azurerm_linux_function_app.app.name
+  value = azurerm_linux_function_app.weather_api.name
 }
 
 output "fa_url" {
-  value = "https://${azurerm_linux_function_app.app.name}.azurewebsites.net"
+  value = "https://${azurerm_linux_function_app.weather_api.name}.azurewebsites.net"
 }

@@ -77,29 +77,11 @@ resource "azurerm_service_plan" "dev_service_plan" {
   name                = "vicdev-service-plan"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  sku_name            = "FC1" #flex consumption plan
+  sku_name            = "Y1"
   os_type             = "Linux"
 }
 
-# resource "azurerm_function_app_flex_consumption" "app" {
-#   name                = "vicdev-weatherapi"
-#   resource_group_name = azurerm_resource_group.rg.name
-#   location            = azurerm_resource_group.rg.location
-#   service_plan_id     = azurerm_service_plan.dev_service_plan.id
-
-#   storage_container_type      = "blobContainer"
-#   storage_container_endpoint  = "${azurerm_storage_account.dev_account.primary_blob_endpoint}${azurerm_storage_container.dev_storage_container.name}"
-#   storage_authentication_type = "StorageAccountConnectionString"
-#   storage_access_key          = azurerm_storage_account.dev_account.primary_access_key
-#   runtime_name                = "dotnet-isolated"
-#   runtime_version             = "8.0"
-#   maximum_instance_count      = 50
-#   instance_memory_in_mb       = 2048
-
-#   site_config {}
-# }
-
-resource "azurerm_linux_function_app" "app" {
+resource "azurerm_linux_function_app" "weather_api" {
   name                = "vicdev-weatherapi"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
