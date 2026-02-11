@@ -11,9 +11,9 @@ output "asp_name" {
 }
 
 output "fa_name" {
-  value = azurerm_function_app_flex_consumption.app_plan.name
+  value = azurerm_linux_function_app.app.name
 }
 
 output "fa_url" {
-  value = "https://${azurerm_function_app_flex_consumption.app_plan.name}.azurewebsites.net"
+  value = "https://${azurerm_linux_function_app.app.name}.azurewebsites.net"
 }
